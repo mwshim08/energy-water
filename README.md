@@ -1,293 +1,183 @@
+<!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>에너지 & 물 절약 프로그램</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            background-color: #f4f4f4;
-        }
-        header {
-            background-color: #4CAF50;
-            color: white;
-            padding: 20px;
-            text-align: center;
-        }
-        .container {
-            display: flex;
-            flex-wrap: wrap;
-            margin: 20px;
-        }
-        .section {
-            flex: 1;
-            margin: 10px;
-            padding: 20px;
-            background-color: white;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        .left, .right {
-            flex-basis: 45%;
-        }
-        .bottom {
-            width: 100%;
-            margin-top: 20px;
-        }
-        h2 {
-            color: #333;
-            border-bottom: 1px solid #ddd;
-            padding-bottom: 10px;
-        }
-        label, input, button {
-            display: block;
-            width: 100%;
-            margin-bottom: 10px;
-        }
-        input {
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-        .temp-buttons, .season-buttons {
-            display: flex;
-            gap: 10px;
-        }
-        .temp-buttons button, .season-buttons button {
-            flex: 1;
-            padding: 10px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-        .temp-buttons button:hover, .season-buttons button:hover {
-            background-color: #45a049;
-        }
-        .result {
-            margin-top: 20px;
-            padding: 10px;
-            background-color: #f9f9f9;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-        .download-btn {
-            margin-top: 30px;
-            background-color: #f0ad4e;
-            color: white;
-            padding: 10px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            width: 100%;
-        }
-        .download-btn:hover {
-            background-color: #ec971f;
-        }
-    </style>
-    <!-- SheetJS 라이브러리 추가 -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>나의 에너지 절약지수는 얼마일까?</title>
+  <style>
+    body {
+      background-color: #e0e0e0;
+      font-family: Arial, sans-serif;
+      padding: 0;
+      margin: 0;
+    }
+    .header {
+      background-color: #444;
+      color: white;
+      text-align: center;
+      padding: 20px 0;
+    }
+    .container {
+      max-width: 800px;
+      margin: 30px auto;
+      background-color: #f9f9f9;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      color: #333;
+    }
+    label {
+      display: block;
+      margin-top: 15px;
+    }
+    input[type=number] {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      appearance: textfield;
+    }
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    button {
+      margin-top: 20px;
+      padding: 12px;
+      width: 100%;
+      background-color: #666;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #555;
+    }
+    .result-box {
+      background-color: #eee;
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 5px;
+    }
+    img.histogram {
+      width: 100%;
+      margin-top: 30px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+  </style>
 </head>
 <body>
+  <div class="header">
+    <h1>나의 에너지 절약지수는 얼마일까?</h1>
+  </div>
 
-<header>
-    <h1>에너지 & 물 절약 프로그램</h1>
-</header>
+  <div class="container">
+    <h2>에너지 사용 관련 정보를 입력해주세요!</h2>
 
-<div class="container">
-    <!-- 가전제품 사용 분석 -->
-    <div class="section left">
-        <h2>가전제품 사용 분석</h2>
-        <label for="aircon">에어컨 사용 시간 (시간):</label>
-        <input type="number" id="aircon" placeholder="에어컨 사용 시간 입력">
+    <label for="summerTemp">여름철 평균 실내 온도 (°C) - 에어컨 설정 온도</label>
+    <input type="number" id="summerTemp" placeholder="예: 26">
 
-        <label for="fan">선풍기 사용 시간 (시간):</label>
-        <input type="number" id="fan" placeholder="선풍기 사용 시간 입력">
+    <label for="winterTemp">겨울철 평균 실내 온도 (°C) - 난방 설정 온도</label>
+    <input type="number" id="winterTemp" placeholder="예: 20">
 
-        <label for="laptop">노트북 충전 시간 (시간):</label>
-        <input type="number" id="laptop" placeholder="노트북 충전 시간 입력">
+    <label for="summerTime">여름철 냉방 사용 시간 (시간)</label>
+    <input type="number" id="summerTime" placeholder="예: 4">
 
-        <label for="phone">핸드폰 충전 시간 (시간):</label>
-        <input type="number" id="phone" placeholder="핸드폰 충전 시간 입력">
+    <label for="winterTime">겨울철 난방 사용 시간 (시간)</label>
+    <input type="number" id="winterTime" placeholder="예: 5">
 
-        <label for="coffeePot">커피포트 사용 시간 (분):</label>
-        <input type="number" id="coffeePot" placeholder="커피포트 사용 시간 입력">
+    <label for="chargeTime">충전(노트북/폰) 시간 (시간)</label>
+    <input type="number" id="chargeTime" placeholder="예: 3">
 
-        <label for="hairDryer">헤어드라이어 사용 시간 (분):</label>
-        <input type="number" id="hairDryer" placeholder="헤어드라이어 사용 시간 입력">
+    <button onclick="calculateScore()">절약지수 계산</button>
 
-        <button onclick="analyzeUsage()">가전제품 사용 분석</button>
-        <div id="usageResult" class="result"></div>
-    </div>
+    <div id="result" class="result-box"></div>
 
-    <!-- 에어컨/히터 사용 제안 -->
-    <div class="section right">
-        <h2>에어컨/히터 사용 제안</h2>
-        <label for="temperature">실내 온도 입력:</label>
-        <input type="number" id="temperature" placeholder="온도 입력">
+    <img class="histogram" src="https://ifh.cc/g/ZKjxZ9.png" alt="절약지수 분포 히스토그램">
+  </div>
 
-        <label>온도 단위 선택:</label>
-        <div class="temp-buttons">
-            <button onclick="setUnit('C')">섭씨 (°C)</button>
-            <button onclick="setUnit('F')">화씨 (°F)</button>
-            <button onclick="setUnit('K')">켈빈 (K)</button>
-        </div>
+  <script>
+    const peerData = [
+      -5.4, -3.2, -1.8, 0.1, 0.5, 1.0, 2.2, 3.3, 4.4, 5.1, 6.2, 7.0, 8.5, 9.0, 10.3,
+      11.5, 12.1, 13.4, 14.6, 15.8, 16.9, 17.5, 18.2, 19.3, 20.5, 0.2, -2.3, 5.7, 7.1, 8.9,
+      6.3, 3.7, 2.6, -1.1, 1.8, 3.2, 4.5, 7.8, 6.9, 2.1, -4.0, -2.5, 0.0, 2.4, 3.9, 5.2, 6.6, 9.9
+    ];
 
-        <label>현재 계절 선택:</label>
-        <div class="season-buttons">
-            <button onclick="setSeason('봄')">봄</button>
-            <button onclick="setSeason('여름')">여름</button>
-            <button onclick="setSeason('가을')">가을</button>
-            <button onclick="setSeason('겨울')">겨울</button>
-        </div>
-
-        <button onclick="suggestTemperatureControl()">온도 제안</button>
-        <div id="tempSuggestion" class="result"></div>
-    </div>
-</div>
-
-<div class="container">
-    <!-- 물 사용 분석 -->
-    <div class="section bottom">
-        <h2>물 사용 분석</h2>
-        <label for="shower">샤워 시간 (분):</label>
-        <input type="number" id="shower" placeholder="샤워 시간 입력">
-
-        <label for="wash">설거지 시간 (분):</label>
-        <input type="number" id="wash" placeholder="설거지 시간 입력">
-
-        <button onclick="analyzeWaterUsage()">물 사용 분석</button>
-        <div id="waterResult" class="result"></div>
-    </div>
-</div>
-
-<!-- 엑셀 파일로 저장 버튼 -->
-<div class="container">
-    <button class="download-btn" onclick="downloadReport()">엑셀로 보고서 저장</button>
-</div>
-
-<script>
-    let temperatureUnit = 'C'; // 기본값
-    let selectedSeason = ''; // 선택된 계절
-
-    function setUnit(unit) {
-        temperatureUnit = unit;
-        alert(`온도 단위가 ${unit}로 설정되었습니다.`);
-    }
-
-    function setSeason(season) {
-        selectedSeason = season;
-        alert(`현재 계절이 ${season}로 설정되었습니다.`);
-    }
-
-    function analyzeUsage() {
-        const airconTime = parseFloat(document.getElementById('aircon').value) || 0;
-        const fanTime = parseFloat(document.getElementById('fan').value) || 0;
-        const laptopTime = parseFloat(document.getElementById('laptop').value) || 0;
-        const phoneTime = parseFloat(document.getElementById('phone').value) || 0;
-        const coffeePotTime = parseFloat(document.getElementById('coffeePot').value) || 0;
-        const hairDryerTime = parseFloat(document.getElementById('hairDryer').value) || 0;
-
-        const usageResult = document.getElementById('usageResult');
-        usageResult.innerHTML = '';
-
-        if (airconTime > 3) {
-            usageResult.innerHTML += '에어컨을 많이 사용합니다. 온도를 조금 높여 에너지 절약을 고려하세요.<br>';
-        }
-        if (fanTime > 5) {
-            usageResult.innerHTML += '선풍기를 오래 사용 중입니다. 필요할 때만 사용해보세요.<br>';
-        }
-        if (laptopTime > 4) {
-            usageResult.innerHTML += '노트북 충전 시간이 길어요. 배터리 충전 후 충전기를 빼는 것이 좋습니다.<br>';
-        }
-        if (phoneTime > 2) {
-            usageResult.innerHTML += '핸드폰 충전 시간이 길어요. 완충 후 충전기를 빼세요.<br>';
-        }
-        if (coffeePotTime > 15) {
-            usageResult.innerHTML += '커피포트 사용 시간이 길어요. 적정량만 끓이세요.<br>';
-        }
-        if (hairDryerTime > 10) {
-            usageResult.innerHTML += '헤어드라이어 사용 시간이 길어요. 짧게 사용해 전기를 절약하세요.<br>';
-        }
-    }
-
-    function convertTemperature(temp, unit) {
-        if (unit === 'F') {
-            return (temp - 32) * 5 / 9; // 화씨 -> 섭씨
-        } else if (unit === 'K') {
-            return temp - 273.15; // 켈빈 -> 섭씨
-        }
-        return temp; // 섭씨
-    }
-
-    function suggestTemperatureControl() {
-        const celsiusTemp = convertTemperature(parseFloat(document.getElementById('temperature').value), temperatureUnit);
-        const tempSuggestion = document.getElementById('tempSuggestion');
-
-        if (selectedSeason === '여름' && celsiusTemp < 24) {
-            tempSuggestion.innerHTML = '온도가 너무 낮습니다. 에어컨 설정 온도를 높여 에너지를 절약하세요.<br>';
-        } else if (selectedSeason === '겨울' && celsiusTemp > 20) {
-            tempSuggestion.innerHTML = '온도가 너무 높습니다. 히터 설정 온도를 낮춰보세요.<br>';
-        } else {
-            tempSuggestion.innerHTML = '현재 온도는 적절합니다.<br>';
-        }
-    }
-
-    const avgWaterUsage = {
-        shower: 10,
-        wash: 15
+    const avg = {
+      summerTemp: 25.3,
+      winterTemp: 21.2,
+      summerTime: 3.6,
+      winterTime: 4.1,
+      chargeTime: 2.8
     };
 
-    function analyzeWaterUsage() {
-        const showerTime = parseFloat(document.getElementById('shower').value) || 0;
-        const washTime = parseFloat(document.getElementById('wash').value) || 0;
+    function calculateScore() {
+      const summerTemp = parseFloat(document.getElementById('summerTemp').value);
+      const winterTemp = parseFloat(document.getElementById('winterTemp').value);
+      const summerTime = parseFloat(document.getElementById('summerTime').value);
+      const winterTime = parseFloat(document.getElementById('winterTime').value);
+      const chargeTime = parseFloat(document.getElementById('chargeTime').value);
 
-        const waterResult = document.getElementById('waterResult');
-        waterResult.innerHTML = '';
+      const totalTime = summerTime + winterTime + chargeTime;
 
-        if (showerTime > avgWaterUsage.shower) {
-            waterResult.innerHTML += '샤워 시간이 길어요. 물 절약을 위해 시간을 줄여보세요.<br>';
-        } else {
-            waterResult.innerHTML += '샤워 시간이 적정합니다.<br>';
-        }
+      // 절약지수 계산 개선
+      const score = 
+        1.5 * (summerTemp - 20) +
+        0.8 * (winterTemp - 18) +
+        -1.0 * (summerTime - 2.5) +
+        -1.0 * (winterTime - 2.5) +
+        -0.7 * (chargeTime - 2);
 
-        if (washTime > avgWaterUsage.wash) {
-            waterResult.innerHTML += '설거지 시간이 길어요. 물을 절약할 방법을 고려하세요.<br>';
-        } else {
-            waterResult.innerHTML += '설거지 시간이 적정합니다.<br>';
-        }
+      const percentile = peerData.filter(p => p <= score).length / peerData.length * 100;
+
+      let feedback = `<strong>당신의 절약지수:</strong> ${score.toFixed(2)}<br>`;
+      feedback += `<strong>상위 백분위:</strong> ${percentile.toFixed(1)}%<br><br>`;
+
+      // 여름 온도 피드백
+      const dSummer = summerTemp - avg.summerTemp;
+      if (dSummer < -2) {
+        feedback += "<strong>[여름 온도]</strong> 너무 낮아요. 에너지 낭비가 클 수 있습니다.<br>";
+      } else if (dSummer < -1) {
+        feedback += "<strong>[여름 온도]</strong> 다소 낮아요. 조금 높여보세요.<br>";
+      } else if (dSummer < 1) {
+        feedback += "<strong>[여름 온도]</strong> 적절한 온도입니다.<br>";
+      } else if (dSummer < 2) {
+        feedback += "<strong>[여름 온도]</strong> 좋은 설정입니다.<br>";
+      } else {
+        feedback += "<strong>[여름 온도]</strong> 훌륭해요! 매우 절약적입니다.<br>";
+      }
+
+      // 충전 시간 피드백
+      const dCharge = chargeTime - avg.chargeTime;
+      if (dCharge > 2) {
+        feedback += "<strong>[충전 시간]</strong> 너무 깁니다. 절약을 고려해보세요.<br>";
+      } else if (dCharge > 1) {
+        feedback += "<strong>[충전 시간]</strong> 다소 깁니다.<br>";
+      } else if (dCharge > -1) {
+        feedback += "<strong>[충전 시간]</strong> 평균적입니다.<br>";
+      } else {
+        feedback += "<strong>[충전 시간]</strong> 충전을 잘 관리하고 있어요.<br>";
+      }
+
+      // 전체 시간 피드백
+      if (totalTime > 12) {
+        feedback += "<strong>[충전용 전기 사용]</strong> 사용량이 매우 많아요. 줄일 여지가 큽니다.<br>";
+      } else if (totalTime > 9) {
+        feedback += "<strong>[충전용 전기 사용]</strong> 평균보다 높은 편입니다.<br>";
+      } else if (totalTime > 6) {
+        feedback += "<strong>[충전용 전기 사용]</strong> 적정 수준입니다.<br>";
+      } else {
+        feedback += "<strong>[충전용 전기 사용]</strong> 매우 절약적입니다!<br>";
+      }
+
+      document.getElementById('result').innerHTML = feedback;
     }
-
-    function downloadReport() {
-        const airconTime = document.getElementById('aircon').value || 0;
-        const fanTime = document.getElementById('fan').value || 0;
-        const laptopTime = document.getElementById('laptop').value || 0;
-        const phoneTime = document.getElementById('phone').value || 0;
-        const coffeePotTime = document.getElementById('coffeePot').value || 0;
-        const hairDryerTime = document.getElementById('hairDryer').value || 0;
-        const showerTime = document.getElementById('shower').value || 0;
-        const washTime = document.getElementById('wash').value || 0;
-
-        const reportData = [
-            ['항목', '시간'],
-            ['에어컨 사용 시간', airconTime],
-            ['선풍기 사용 시간', fanTime],
-            ['노트북 충전 시간', laptopTime],
-            ['핸드폰 충전 시간', phoneTime],
-            ['커피포트 사용 시간', coffeePotTime],
-            ['헤어드라이어 사용 시간', hairDryerTime],
-            ['샤워 시간', showerTime],
-            ['설거지 시간', washTime],
-        ];
-
-        const worksheet = XLSX.utils.aoa_to_sheet(reportData);
-        const workbook = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(workbook, worksheet, '보고서');
-
-        XLSX.writeFile(workbook, 'energy_water_report.xlsx');
-    }
-</script>
-
+  </script>
 </body>
 </html>
